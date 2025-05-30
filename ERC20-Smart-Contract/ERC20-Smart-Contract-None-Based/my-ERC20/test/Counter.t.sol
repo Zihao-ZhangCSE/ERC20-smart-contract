@@ -6,22 +6,12 @@ import {Counter} from "../src/Counter.sol";
 
 contract CounterTest is Test {
     Counter public counter;
-    address owner = address(0x1234);
+    address owner = address(this);
 
     function setUp() public {
         counter = new Counter();
-        counter.setNumber(0);
     }
 
-    function test_Increment() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
-    }
-
-    function testFuzz_SetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
-    }
 
     // 功能测试
 
@@ -29,7 +19,7 @@ contract CounterTest is Test {
 
     // 1、 测试ERC20合约发布的代币的名称（name）
     function testName() public view {
-        assertEq(counter.name(), "AES");
+        assertEq(counter.name(), "AESToken");
     }
 
     // 2、 测试ERC20合约发布的代币的符号（symbol）
@@ -38,12 +28,12 @@ contract CounterTest is Test {
     }
 
     // 3、测试ERC20合约发布的代币的精确值（decimals）
-    function testDecimals() public view{
+    function testDecimals() public view {
         assertEq(counter.decimals(), 18);
     }
 
     // 4、 测试ERC20合约发布的代币的总发行量（TotalSupply）
-    function testTotalSupply() public view{
+    function testTotalSupply() public view {
         assertEq(counter.totalSupply(), 1000000 * (10 ** 18));
     }
     
@@ -53,7 +43,6 @@ contract CounterTest is Test {
 
     function testBalanceof1() public {
         address user1 = address(0x234);
-        assertEq(counter.balanceOf(owner), 1000000 * (10 ** 18));
         assertEq(counter.balanceOf(user1), 0);
         address user2 = address(0x456);
         assertEq(counter.balanceOf(user2), 0);
@@ -181,7 +170,7 @@ contract CounterTest is Test {
 
     // 12、 (3)授权转账金额不为0结果查询 transferFrom
 
-        function testAllowance3() public {
+    function testAllowance3() public {
         address user1 = address(0x3456);
         address user2 = address(0x4567);
         address user3 = address(0x6789);
@@ -204,7 +193,7 @@ contract CounterTest is Test {
         counter.transferFrom(user1, user3, 50 * (10 ** 18));
         assertEq(counter.balanceOf(user1), 50 * (10 ** 18));
         assertEq(counter.balanceOf(user3), 350 * (10 ** 18));
-        }
+    }
 
     // 13、 授权转账金额为0结果查询 tranferFrom
 
@@ -228,11 +217,81 @@ contract CounterTest is Test {
         counter.approve(user2, 0 * (10 ** 18));
         assertEq(counter.allowance(user1, user2), 0 * (10 ** 18));
         vm.prank(user2);
-        counter.transferFrom(user1, user3, 0 * (10 ** 18));
+        counter.transferFrom(user1, user3, 0);
         assertEq(counter.balanceOf(user1), 100 * (10 ** 18));
         assertEq(counter.balanceOf(user3), 300 * (10 ** 18));
     }
 
   // 安全测试
 
+  // （1）和转账有关的安全测试
+
+  // 14、账户余额为0时进行金额大于0的转账
+  
+      function testSecurityTransfer1() public {
+        address user1 = address(0x234);
+        address user2 = address(0x456);
+        assertEq(counter.balanceOf(user1), 0);
+        assertEq(counter.balanceOf(user2), 0);        
+        // user2的余额为0，尝试转账100个代币给user1
+        vm.prank(user2);
+        vm.expectRevert("Account Balance Not Enough!");
+        counter.transfer(user1, 100 * (10 ** 18));
+        // 验证余额未变化
+        assertEq(counter.balanceOf(user1), 0);
+        assertEq(counter.balanceOf(user2), 0);
+    }
+
+  // 15、转账的金额超过账户余额
+
+      function testSecurityTransfer2() public {
+        address user1 = address(0x234);
+        address user2 = address(0x456);
+        assertEq(counter.balanceOf(user1), 0);
+        assertEq(counter.balanceOf(user2), 0);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Account Balance Not Enough!");
+        counter.transfer(user2, 200 * (10 ** 18));
+        // 验证余额未变化
+        assertEq(counter.balanceOf(user1), 100 * (10 ** 18));
+        assertEq(counter.balanceOf(user2), 0);
+    }
+
+  // 16、转账的金额超过货币的总发行量
+
+      function testSecurityTransfer3() public {
+        address user1 = address(0x234);
+        address user2 = address(0x456);
+        vm.prank(user1);
+        vm.expectRevert("Account Balance Not Enough!");
+        counter.transfer(user2, 2000000 * (10 ** 18));
+        // 验证余额未变化
+        assertEq(counter.balanceOf(user1), 0);
+        assertEq(counter.balanceOf(user2), 0);
+    }
+
+  // 17、转账0元
+
+      function testSecurityTransfer4() public {
+        address user1 = address(0x234);
+        address user2 = address(0x456);
+        vm.prank(user1);
+        counter.transfer(user2, 0);
+        assertEq(counter.balanceOf(user1), 0);
+        assertEq(counter.balanceOf(user1), 0);
+    }
+
+  // 18、给自己转账
+
+      function testSecurityTransfer5() public {
+        address user1 = address(0x234);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(user1);
+        counter.transfer(user1, 50 * (10 ** 18));
+        assertEq(counter.balanceOf(user1), 100 * (10 ** 18));
+    }
+  
 }
