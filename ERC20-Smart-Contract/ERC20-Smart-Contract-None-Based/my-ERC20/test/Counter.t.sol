@@ -13,33 +13,33 @@ contract CounterTest is Test {
     }
 
 
-    // 功能测试
+// 功能测试
 
-    // 基本信息
+// 基本信息
 
-    // 1、 测试ERC20合约发布的代币的名称（name）
+// 1、 测试ERC20合约发布的代币的名称（name）
     function testName() public view {
         assertEq(counter.name(), "AESToken");
     }
 
-    // 2、 测试ERC20合约发布的代币的符号（symbol）
+// 2、 测试ERC20合约发布的代币的符号（symbol）
     function testSymbol() public view {
         assertEq(counter.symbol(),"ATK");
     }
 
-    // 3、测试ERC20合约发布的代币的精确值（decimals）
+// 3、测试ERC20合约发布的代币的精确值（decimals）
     function testDecimals() public view {
         assertEq(counter.decimals(), 18);
     }
 
-    // 4、 测试ERC20合约发布的代币的总发行量（TotalSupply）
+// 4、 测试ERC20合约发布的代币的总发行量（TotalSupply）
     function testTotalSupply() public view {
         assertEq(counter.totalSupply(), 1000000 * (10 ** 18));
     }
     
-    // 获取钱包余额
+// 获取钱包余额
     
-    // 5、(1)测试不同账户余额为0的情况
+// 5、(1)测试不同账户余额为0的情况
 
     function testBalanceof1() public {
         address user1 = address(0x234);
@@ -52,7 +52,7 @@ contract CounterTest is Test {
     }
 
 
-    // 6、（2）测试为不同账户新铸造不为0的货币数量并查询余额
+// 6、（2）测试为不同账户新铸造不为0的货币数量并查询余额
 
     function testBalanceof2() public {
         address user1 = address(0x234);
@@ -68,7 +68,7 @@ contract CounterTest is Test {
         assertEq(counter.totalSupply(), 1000300 * (10 ** 18)); //测试再给两个账户新铸造代币后 总代币的数量
     }
 
-    // 7、 （3）测试为余额不为0的账户铸造0个货币并查询余额
+// 7、 （3）测试为余额不为0的账户铸造0个货币并查询余额
 
     function testBalanceof3() public {
         address user1 = address(0x3456);
@@ -81,9 +81,9 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user1), 100 * (10 ** 8));
     }
 
-    // ERC20的转账 
+// ERC20的转账 
 
-    // 8、 (1) 转账不为0的情况 user2 -> user1
+// 8、 (1) 转账不为0的情况 user2 -> user1
 
     function testTransfer1() public {
         address user1 = address(0x3456);
@@ -102,7 +102,7 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user2), 100 * (10 ** 18));
     }
 
-    // 9、（2）转账为0的情况 user2 -> user1
+// 9、（2）转账为0的情况 user2 -> user1
 
     function testTransfer2() public {
         address user1 = address(0x3456);
@@ -121,9 +121,9 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user2), 200 * (10 ** 18));
     }
     
-    // ERC20的授权转账
+// ERC20的授权转账
 
-    // 10、 (1)查询授权金额数量不为0 allowance
+// 10、 (1)查询授权金额数量不为0 allowance
     function testAllowance1() public {
         address user1 = address(0x3456);
         address user2 = address(0x4567);
@@ -145,8 +145,7 @@ contract CounterTest is Test {
         assertEq(counter.allowance(user1, user2), 50 * (10 ** 18));
     }
 
-    // 11、（2）授权金额数量为0 查询 allowance
-
+// 11、（2）授权金额数量为0 查询 allowance
     function testAllowance2() public {
         address user1 = address(0x3456);
         address user2 = address(0x4567);
@@ -168,8 +167,7 @@ contract CounterTest is Test {
         assertEq(counter.allowance(user1, user2), 0);
     }
 
-    // 12、 (3)授权转账金额不为0结果查询 transferFrom
-
+// 12、 (3)授权转账金额不为0结果查询 transferFrom
     function testAllowance3() public {
         address user1 = address(0x3456);
         address user2 = address(0x4567);
@@ -195,8 +193,7 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user3), 350 * (10 ** 18));
     }
 
-    // 13、 授权转账金额为0结果查询 tranferFrom
-
+// 13、 授权转账金额为0结果查询 tranferFrom
     function testAllowance4() public {
         address user1 = address(0x3456);
         address user2 = address(0x4567);
@@ -222,13 +219,12 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user3), 300 * (10 ** 18));
     }
 
-  // 安全测试
+// 安全测试
 
-  // （1）和转账有关的安全测试
+// （1）和转账有关的安全测试
 
-  // 14、账户余额为0时进行金额大于0的转账
-  
-      function testSecurityTransfer1() public {
+// 14、账户余额为0时进行金额大于0的转账
+    function testSecurityTransfer1() public {
         address user1 = address(0x234);
         address user2 = address(0x456);
         assertEq(counter.balanceOf(user1), 0);
@@ -242,9 +238,9 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user2), 0);
     }
 
-  // 15、转账的金额超过账户余额
+// 15、转账的金额超过账户余额
 
-      function testSecurityTransfer2() public {
+    function testSecurityTransfer2() public {
         address user1 = address(0x234);
         address user2 = address(0x456);
         assertEq(counter.balanceOf(user1), 0);
@@ -259,9 +255,8 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user2), 0);
     }
 
-  // 16、转账的金额超过货币的总发行量
-
-      function testSecurityTransfer3() public {
+// 16、转账的金额超过货币的总发行量
+    function testSecurityTransfer3() public {
         address user1 = address(0x234);
         address user2 = address(0x456);
         vm.prank(user1);
@@ -272,9 +267,8 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user2), 0);
     }
 
-  // 17、转账0元
-
-      function testSecurityTransfer4() public {
+// 17、转账0元
+    function testSecurityTransfer4() public {
         address user1 = address(0x234);
         address user2 = address(0x456);
         vm.prank(user1);
@@ -283,9 +277,8 @@ contract CounterTest is Test {
         assertEq(counter.balanceOf(user1), 0);
     }
 
-  // 18、给自己转账
-
-      function testSecurityTransfer5() public {
+// 18、给自己转账
+    function testSecurityTransfer5() public {
         address user1 = address(0x234);
         vm.prank(owner);
         counter.mint(user1, 100 * (10 ** 18));
@@ -293,5 +286,110 @@ contract CounterTest is Test {
         counter.transfer(user1, 50 * (10 ** 18));
         assertEq(counter.balanceOf(user1), 100 * (10 ** 18));
     }
-  
+    
+// 19、非合约部署者铸造代币
+    function testNotOwnerMint() public {
+        address user1 = address(0x234);
+        vm.prank(user1);
+        vm.expectRevert("Only Owner Can Mint");
+        counter.mint(user1, 100 * (10 ** 18));
+    }
+// 20、铸造代币接收地址为0
+    function testAddrIs0() public {
+        address user1 = address(0);
+        vm.prank(owner);
+        vm.expectRevert("Mint Receiver address cannot be 0!");
+        counter.mint(user1, 100 * (10 ** 18));
+    }
+
+// 21、 授权转账transferFrom owner地址为0
+    function testTransferFrom1() public {
+        address user1 = address(0);
+        address user2 = address(0x4567);
+        address user3 = address(0x6789);
+        vm.prank(owner);
+        vm.expectRevert("Mint Receiver address cannot be 0!");
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(owner);
+        counter.mint(user2, 200 * (10 ** 18));
+        vm.prank(owner);
+        counter.mint(user3, 300 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Approve Owner Address cannot be 0!");
+        counter.approve(user2, 0 * (10 ** 18));
+        vm.prank(user2);
+        vm.expectRevert("transferFrom Owner Address cannot be 0!");
+        counter.transferFrom(user1, user3, 0);
+    }
+// 22、授权转账transferFrom receiver地址为0
+    function testTransferFrom2() public {
+        address user1 = address(0x1234);
+        address user2 = address(0x4567);
+        address user3 = address(0);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(owner);
+        counter.mint(user2, 200 * (10 ** 18));
+        vm.prank(owner);
+        vm.expectRevert("Mint Receiver address cannot be 0!");
+        counter.mint(user3, 300 * (10 ** 18));
+        vm.prank(user1);
+        counter.approve(user2, 50 * (10 ** 18));
+        vm.prank(user2);
+        vm.expectRevert("transferFrom Receiver Address cannot be 0!");
+        counter.transferFrom(user1, user3, 0);
+    }
+// 23、授权转账transferFrom spender地址为0
+    function testTransferFrom3() public {
+        address user1 = address(0x1234);
+        address user2 = address(0);
+        address user3 = address(0x6789);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(owner);
+        counter.mint(user3, 300 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Approve Spender Address cannot be 0!");
+        counter.approve(user2, 50 * (10 ** 18));
+        vm.prank(user2);
+        vm.expectRevert("transferFrom Spender Address cannnot be 0!");
+        counter.transferFrom(user1, user3, 50 * (10 ** 18));
+
+    }
+// 24、授权approve owner地址为0
+    function testApprove1() public {
+        address user1 = address(0);
+        address user2 = address(0x4567);
+        vm.prank(owner);
+        vm.expectRevert("Mint Receiver address cannot be 0!");
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(owner);
+        counter.mint(user2, 200 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Approve Owner Address cannot be 0!");
+        counter.approve(user2, 10 * (10 ** 18));
+    }
+// 25、授权approve spender地址为0
+    function testApprove2() public {
+        address user1 = address(0x1234);
+        address user2 = address(0);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(owner);
+        vm.expectRevert("Mint Receiver address cannot be 0!");
+        counter.mint(user2, 200 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Approve Spender Address cannot be 0!");
+        counter.approve(user2, 10 * (10 ** 18));
+    }
+// 26、授权approve owner账户余额不足
+    function testApprove3() public {
+        address user1 = address(0x1234);
+        address user2 = address(0x5678);
+        vm.prank(owner);
+        counter.mint(user1, 100 * (10 ** 18));
+        vm.prank(user1);
+        vm.expectRevert("Approve Account Balance Not Enough!");
+        counter.approve(user2, 150 * (10 ** 18));
+    }
 }

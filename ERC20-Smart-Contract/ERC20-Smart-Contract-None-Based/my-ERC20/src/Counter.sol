@@ -81,9 +81,9 @@ contract Counter{
         // 授权函数
         function approve(address spenderAddr, uint256 amount) public {
             address ownerAddr = msg.sender;
-            require(ownerAddr != address(0), "Owner Address cannot be 0!");
-            require(spenderAddr != address(0), "Spender Address cannot be 0!");
-            require(balances[ownerAddr] >= amount, "Account Balance Not Enough!");
+            require(ownerAddr != address(0), "Approve Owner Address cannot be 0!");
+            require(spenderAddr != address(0), "Approve Spender Address cannot be 0!");
+            require(balances[ownerAddr] >= amount, "Approve Account Balance Not Enough!");
             allowances[ownerAddr][spenderAddr] = amount;
             emit Approval(ownerAddr, spenderAddr, amount);
         }
@@ -91,9 +91,9 @@ contract Counter{
         // 授权转账函数
         function transferFrom(address fromAddr, address toAddr, uint256 amount) public{
             address spenderAddr = msg.sender;
-            require(fromAddr != address(0), "Owner Address cannot be 0!");
-            require(toAddr != address(0), "Receiver Address cannot be 0!");
-            require(spenderAddr != address(0), "Spender Address cannnot be 0!");
+            require(fromAddr != address(0), "transferFrom Owner Address cannot be 0!");
+            require(toAddr != address(0), "transferFrom Receiver Address cannot be 0!");
+            require(spenderAddr != address(0), "transferFrom Spender Address cannnot be 0!");
             require(allowances[fromAddr][spenderAddr] >= amount);
             balances[fromAddr] -= amount;
             allowances[fromAddr][spenderAddr] -= amount;
@@ -101,9 +101,10 @@ contract Counter{
             emit TransferFrom(fromAddr, toAddr, amount);
         }
 
+        // 铸造函数
         function mint(address account, uint256 amount) public {
             require(msg.sender == owner, "Only Owner Can Mint");
-            require(account != address(0), "Receiver address cannot be 0!");
+            require(account != address(0), "Mint Receiver address cannot be 0!");
             balances[account] += amount;
             totalSupply_ += amount;
             emit Mint(account, amount);
